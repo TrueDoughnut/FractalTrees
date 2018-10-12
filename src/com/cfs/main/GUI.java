@@ -23,7 +23,7 @@ public class GUI extends Canvas {
     @Override
     public void paint(Graphics g){
         g.setColor(Color.BLACK);
-        drawTree(g, WIDTH / 2, HEIGHT - 50, -90, 11);
+        drawTree(g, WIDTH / 2, HEIGHT - 50, -90, 10);
     }
 
     private void drawTree(Graphics g, int x1, int y1, double angle, int depth){
@@ -35,10 +35,20 @@ public class GUI extends Canvas {
         int y2 = y1 + (int)(Math.sin(Math.toRadians(angle)) * depth * r);
         g.drawLine(x1, y1, x2, y2);
         try {
-            Thread.sleep(5);
+            Thread.sleep(10);
         } catch(Exception ignore){}
 
-        drawTree(g, x2, y2, angle - 30, depth - 1);
-        drawTree(g, x2, y2, angle + 30, depth - 1);
+        Thread t1 = new Thread(() -> drawTree(g, x2, y2, angle - 40, depth - 1));
+        Thread t2 = new Thread(() -> drawTree(g, x2, y2, angle + 40, depth - 1));
+
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch(InterruptedException e){
+            e.printStackTrace();
+        }
     }
 }
